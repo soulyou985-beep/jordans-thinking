@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d2b3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Jordan's thinking">
+<title>Jordan's thinking</title>
+<style>
+:root{
+  --bg:#f6f4ef; --card:#ffffff; --ink:#1f2328; --sub:#6b6f76; --line:#e6e2d9;
+  --accent:#1d2b3a; --hl:#fff6d8; --hlb:#e9c95a; --fs:17px;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#14171b; --card:#1d2126; --ink:#e7e5e0; --sub:#9aa0a8; --line:#2c3138; --accent:#e7e5e0; --hl:#2d2a1c; --hlb:#8a7428; }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  padding-bottom:env(safe-area-inset-bottom)}
+header{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);
+  padding:calc(10px + env(safe-area-inset-top)) 12px 10px;display:flex;align-items:center;gap:8px;min-height:54px}
+header .back{border:0;background:none;color:var(--ink);font-size:26px;line-height:1;padding:4px 8px;cursor:pointer}
+header h1{font-size:17px;margin:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+header .tools button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;
+  font-size:14px;padding:5px 9px;margin-left:4px;cursor:pointer}
+#progress{position:fixed;top:0;left:0;height:3px;background:var(--hlb);width:0;z-index:6}
+main{max-width:720px;margin:0 auto;padding:16px 16px 40px}
+
+/* home */
+.hero{padding:34px 4px 22px}
+.hero h2{font-family:Georgia,"Times New Roman",serif;font-size:36px;margin:0;letter-spacing:-.5px}
+.hero p{color:var(--sub);margin:6px 0 0;font-size:14px}
+.cats{display:grid;gap:12px}
+.cat{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;
+  padding:18px 18px;text-decoration:none;color:var(--ink)}
+.cat .em{font-size:28px;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--bg)}
+.cat .nm{font-size:21px;font-weight:700}
+.cat .ko{font-size:13px;color:var(--sub);margin-top:2px}
+.cat .ct{margin-left:auto;color:var(--sub);font-size:14px}
+
+/* list */
+.search{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);
+  color:var(--ink);font-size:16px;margin-bottom:12px}
+.items{list-style:none;margin:0;padding:0}
+.items li a,.items li .na{display:flex;gap:12px;align-items:flex-start;padding:14px 4px;border-bottom:1px solid var(--line);
+  text-decoration:none;color:var(--ink)}
+.items .no{color:var(--sub);font-size:13px;min-width:22px;padding-top:3px;text-align:right}
+.items .tt{font-size:16.5px;line-height:1.45;font-weight:600}
+.items .mt{font-size:12.5px;color:var(--sub);margin-top:4px;display:flex;gap:6px;align-items:center}
+.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 8px;font-size:11.5px;color:var(--sub);background:var(--card)}
+.badge.long{border-color:var(--hlb);color:var(--ink);background:var(--hl)}
+.items .na{opacity:.45}
+
+/* article */
+.art-head{padding:8px 0 16px;border-bottom:1px solid var(--line);margin-bottom:18px}
+.art-head .cat-l{font-size:13px;color:var(--sub);text-decoration:none}
+.art-head h2{font-size:calc(var(--fs) + 7px);line-height:1.4;margin:6px 0 10px;letter-spacing:-.3px}
+.art-head .mt{display:flex;gap:8px;align-items:center;color:var(--sub);font-size:13px}
+.body{font-size:var(--fs);line-height:1.85;word-break:keep-all;overflow-wrap:anywhere}
+.body p{margin:0 0 .35em}
+.body .gap{height:.9em}
+.body h3{font-size:calc(var(--fs) + 2px);margin:1.3em 0 .4em}
+.body p.sub{font-weight:700;margin-top:.6em}
+.body .concl{background:var(--hl);border-left:4px solid var(--hlb);border-radius:8px;padding:12px 14px;margin:1.2em 0 .6em;font-weight:600}
+.body figure{margin:1em 0;text-align:center}
+.body img{max-width:100%;border-radius:8px;border:1px solid var(--line);background:#fff}
+.tbl{overflow-x:auto;margin:1em 0}
+.tbl table{border-collapse:collapse;font-size:calc(var(--fs) - 3px);min-width:100%}
+.tbl td,.tbl th{border:1px solid var(--line);padding:6px 9px;white-space:nowrap;text-align:center}
+.tbl th{background:var(--hl)}
+.empty{color:var(--sub);text-align:center;padding:40px 10px;line-height:1.7}
+.nav{display:flex;gap:10px;margin-top:34px}
+.nav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-decoration:none;color:var(--ink);min-width:0}
+.nav a small{display:block;color:var(--sub);font-size:12px;margin-bottom:3px}
+.nav a span{display:block;font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav a.nx{text-align:right}
+.totop{display:block;text-align:center;margin:22px 0 0;color:var(--sub);font-size:13px;text-decoration:none}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<header>
+  <button class="back" id="back" aria-label="뒤로" hidden>‹</button>
+  <h1 id="htitle">Jordan's thinking</h1>
+  <div class="tools" id="tools" hidden>
+    <button id="fsm" aria-label="글자 작게">가-</button><button id="fsp" aria-label="글자 크게">가+</button>
+  </div>
+</header>
+<main id="app"></main>
+<script>
+const CATS = {
+  Rich:{ko:'부와 돈', em:'💰'}, Life:{ko:'삶과 인생', em:'🌱'}, Invest:{ko:'투자와 경제', em:'📈'},
+  Health:{ko:'건강과 다이어트', em:'💪'}, Edu:{ko:'교육과 공부', em:'📚'}
+};
+let DATA = null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtDate = d => `20${d.slice(0,2)}.${d.slice(2,4)}.${d.slice(4,6)}`;
+function store(k, v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k, v);}catch(e){ return null; } }
+
+let fs = parseInt(store('jt-fs')) || 17;
+function applyFs(){ document.documentElement.style.setProperty('--fs', fs + 'px'); store('jt-fs', fs); }
+applyFs();
+$('#fsm').onclick = () => { fs = Math.max(14, fs - 1); applyFs(); };
+$('#fsp').onclick = () => { fs = Math.min(26, fs + 1); applyFs(); };
+$('#back').onclick = () => {
+  const p = parseHash();
+  location.hash = p.length > 1 ? p[0] : '';
+};
+
+function header(title, depth, tools){
+  $('#htitle').textContent = title;
+  $('#back').hidden = depth === 0;
+  $('#tools').hidden = !tools;
+  document.title = depth === 0 ? "Jordan's thinking" : title + " · Jordan's thinking";
+}
+
+function home(){
+  header("Jordan's thinking", 0, false);
+  $('#app').innerHTML = `<div class="hero"><h2>Jordan's thinking</h2><p>조던의 생각 · 분야를 골라 읽어 보세요</p></div>
+  <div class="cats">${DATA.map(c => `<a class="cat" href="#${c.name}">
+    <div class="em">${CATS[c.name].em}</div><div><div class="nm">${c.name}</div><div class="ko">${CATS[c.name].ko}</div></div>
+    <div class="ct">${c.items.length}편 ›</div></a>`).join('')}</div>`;
+}
+
+function list(cat){
+  const c = DATA.find(x => x.name === cat); if(!c) return home();
+  header(cat, 1, false);
+  const q = sessionStorage.getItem('jt-q-' + cat) || '';
+  $('#app').innerHTML = `<input class="search" id="q" type="search" placeholder="제목 검색" value="${esc(q)}">
+    <ul class="items" id="items"></ul>`;
+  const draw = () => {
+    const v = $('#q').value.trim().replace(/\s/g,'');
+    sessionStorage.setItem('jt-q-' + cat, $('#q').value);
+    $('#items').innerHTML = c.items.map((it, i) => ({it, i}))
+      .filter(({it}) => !v || it.title.replace(/\s/g,'').includes(v))
+      .map(({it, i}) => {
+        const meta = `<div class="mt">${fmtDate(it.date)} <span class="badge ${it.np > 1 ? 'long' : ''}">${it.np}장</span>${it.blocks.length ? '' : ' <span class="badge">본문 없음</span>'}</div>`;
+        const inner = `<div class="no">${i + 1}</div><div><div class="tt">${esc(it.title)}</div>${meta}</div>`;
+        return it.blocks.length ? `<li><a href="#${cat}-${i + 1}">${inner}</a></li>` : `<li><div class="na">${inner}</div></li>`;
+      }).join('') || '<li class="empty">검색 결과가 없어요</li>';
+  };
+  $('#q').oninput = draw; draw();
+  const y = sessionStorage.getItem('jt-y-' + cat); if (y) window.scrollTo(0, +y);
+}
+
+function blockHtml(b){
+  if (b.t === 'gap') return '<div class="gap"></div>';
+  if (b.t === 'img') return `<figure><img loading="lazy" src="${b.src}" alt=""></figure>`;
+  if (b.t === 'table') {
+    const [h, ...rows] = b.rows;
+    return `<div class="tbl"><table><tr>${h.map(x => `<th>${esc(x)}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map(x => `<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</table></div>`;
+  }
+  const x = b.x;
+  if (/^결론\s*:/.test(x)) return `<div class="concl">${esc(x).replace(/\n/g, '<br>')}</div>`;
+  if (/^\d+\.\s*\S/.test(x) && x.length <= 40 && !/[.?!]$/.test(x)) return `<h3>${esc(x)}</h3>`;
+  if (/^(\d+\)|[①-⑳]|\(\d+\))\s*\S/.test(x) && x.length <= 40) return `<p class="sub">${esc(x)}</p>`;
+  return `<p>${esc(x)}</p>`;
+}
+
+function article(cat, n){
+  const c = DATA.find(x => x.name === cat); if(!c) return home();
+  const i = n - 1, it = c.items[i]; if(!it) return list(cat);
+  header(cat, 2, true);
+  // merge consecutive "결론" continuation lines into the conclusion box
+  const blocks = []; let inC = false;
+  for (const b of it.blocks) {
+    if (b.t === 'p' && /^결론\s*:/.test(b.x)) { blocks.push({t:'p', x:b.x}); inC = true; continue; }
+    if (inC && b.t === 'p') { blocks[blocks.length - 1].x += '\n' + b.x; continue; }
+    inC = false; blocks.push(b);
+  }
+  const findNav = (dir) => { for (let j = i + dir; j >= 0 && j < c.items.length; j += dir) if (c.items[j].blocks.length) return j; return -1; };
+  const pv = findNav(-1), nx = findNav(1);
+  $('#app').innerHTML = `<div class="art-head"><a class="cat-l" href="#${cat}">${cat} · ${i + 1} / ${c.items.length}</a>
+      <h2>${esc(it.title)}</h2>
+      <div class="mt">${fmtDate(it.date)} <span class="badge ${it.np > 1 ? 'long' : ''}">${it.np}장</span></div></div>
+    <div class="body">${blocks.map(blockHtml).join('')}</div>
+    <div class="nav">${pv >= 0 ? `<a href="#${cat}-${pv + 1}"><small>‹ 이전 글</small><span>${esc(c.items[pv].title)}</span></a>` : ''}
+      ${nx >= 0 ? `<a class="nx" href="#${cat}-${nx + 1}"><small>다음 글 ›</small><span>${esc(c.items[nx].title)}</span></a>` : ''}</div>
+    <a class="totop" href="#${cat}">목록으로</a>`;
+  window.scrollTo(0, 0);
+}
+
+function parseHash(){
+  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ''));
+  const m = h.match(/^([A-Za-z]+)(?:[-\/](\d+))?$/);
+  return m ? (m[2] ? [m[1], m[2]] : [m[1]]) : [];
+}
+let lastList = null;
+function route(){
+  if (lastList) sessionStorage.setItem('jt-y-' + lastList, window.scrollY);
+  const p = parseHash();
+  lastList = null;
+  if (!p.length) { home(); window.scrollTo(0, 0); }
+  else if (p.length === 1) { list(p[0]); lastList = p[0]; }
+  else article(p[0], parseInt(p[1]));
+  onScroll();
+}
+function onScroll(){
+  const isArt = parseHash().length > 1;
+  const h = document.documentElement.scrollHeight - innerHeight;
+  $('#progress').style.width = isArt && h > 0 ? (scrollY / h * 100) + '%' : 0;
+}
+addEventListener('scroll', onScroll, {passive:true});
+addEventListener('hashchange', route);
+fetch('data.json').then(r => r.json()).then(d => { DATA = d; route(); })
+  .catch(() => { $('#app').innerHTML = '<p class="empty">자료를 불러오지 못했어요. 새로고침해 주세요.</p>'; });
+</script>
+</body>
+</html>
