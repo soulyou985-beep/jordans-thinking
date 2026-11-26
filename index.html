@@ -70,6 +70,18 @@ main{max-width:720px;margin:0 auto;padding:16px 16px 40px}
 .tbl table{border-collapse:collapse;font-size:calc(var(--fs) - 3px);min-width:100%}
 .tbl td,.tbl th{border:1px solid var(--line);padding:6px 9px;white-space:nowrap;text-align:center}
 .tbl th{background:var(--hl)}
+.cat.book{border-style:dashed}
+.bk-intro{color:var(--sub);font-size:14px;margin:2px 2px 12px}
+.books{list-style:none;margin:0;padding:0}
+.books li{display:flex;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line)}
+.books .no{color:var(--sub);font-size:13px;min-width:22px;padding-top:3px;text-align:right}
+.books .bd{min-width:0}
+.books .bt{font-size:16.5px;font-weight:700;line-height:1.45}
+.books .bi{font-size:14px;color:var(--sub);line-height:1.55;margin-top:3px;word-break:keep-all;overflow-wrap:anywhere}
+.books .mt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px;font-size:12.5px;color:var(--sub)}
+.books .og{font-style:italic;overflow-wrap:anywhere}
+.body p.lnk{font-size:13px;margin-bottom:.6em}
+.body p.lnk a{color:var(--sub)}
 .empty{color:var(--sub);text-align:center;padding:40px 10px;line-height:1.7}
 .nav{display:flex;gap:10px;margin-top:34px}
 .nav a{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;text-decoration:none;color:var(--ink);min-width:0}
@@ -94,7 +106,7 @@ const CATS = {
   Rich:{ko:'부와 돈', em:'💰'}, Life:{ko:'삶과 인생', em:'🌱'}, Invest:{ko:'투자와 경제', em:'📈'},
   Health:{ko:'건강과 다이어트', em:'💪'}, Edu:{ko:'교육과 공부', em:'📚'}
 };
-let DATA = null;
+let DATA = null, BOOKS = [];
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fmtDate = d => `20${d.slice(0,2)}.${d.slice(2,4)}.${d.slice(4,6)}`;
@@ -122,7 +134,9 @@ function home(){
   $('#app').innerHTML = `<div class="hero"><h2>Jordan's thinking</h2><p>조던의 생각 · 분야를 골라 읽어 보세요</p></div>
   <div class="cats">${DATA.map(c => `<a class="cat" href="#${c.name}">
     <div class="em">${CATS[c.name].em}</div><div><div class="nm">${c.name}</div><div class="ko">${CATS[c.name].ko}</div></div>
-    <div class="ct">${c.items.length}편 ›</div></a>`).join('')}</div>`;
+    <div class="ct">${c.items.length}편 ›</div></a>`).join('')}
+    <a class="cat book" href="#Books"><div class="em">📖</div><div><div class="nm">추천도서</div><div class="ko">조던의 추천도서</div></div>
+    <div class="ct">${BOOKS.length}권 ›</div></a></div>`;
 }
 
 function list(cat){
@@ -137,13 +151,34 @@ function list(cat){
     $('#items').innerHTML = c.items.map((it, i) => ({it, i}))
       .filter(({it}) => !v || it.title.replace(/\s/g,'').includes(v))
       .map(({it, i}) => {
-        const meta = `<div class="mt">${fmtDate(it.date)} <span class="badge ${it.np > 1 ? 'long' : ''}">${it.np}장</span>${it.blocks.length ? '' : ' <span class="badge">본문 없음</span>'}</div>`;
+        const meta = `<div class="mt">${fmtDate(it.date)} <span class="badge">${it.np}장</span>${it.blocks.length ? '' : ' <span class="badge">본문 없음</span>'}</div>`;
         const inner = `<div class="no">${i + 1}</div><div><div class="tt">${esc(it.title)}</div>${meta}</div>`;
         return it.blocks.length ? `<li><a href="#${cat}-${i + 1}">${inner}</a></li>` : `<li><div class="na">${inner}</div></li>`;
       }).join('') || '<li class="empty">검색 결과가 없어요</li>';
   };
   $('#q').oninput = draw; draw();
   const y = sessionStorage.getItem('jt-y-' + cat); if (y) window.scrollTo(0, +y);
+}
+
+function books(){
+  header('추천도서', 1, false);
+  const q = sessionStorage.getItem('jt-q-Books') || '';
+  $('#app').innerHTML = `<div class="bk-intro">⁌ 조던의 추천도서 ⁍ · ${BOOKS.length}권</div>
+    <input class="search" id="q" type="search" placeholder="책 제목·저자 검색" value="${esc(q)}">
+    <ul class="books" id="items"></ul>`;
+  const draw = () => {
+    const v = $('#q').value.trim().replace(/\s/g,'').toLowerCase();
+    sessionStorage.setItem('jt-q-Books', $('#q').value);
+    $('#items').innerHTML = BOOKS.map((b, i) => ({b, i}))
+      .filter(({b}) => !v || (b.title + b.info + (b.orig || '')).replace(/\s/g,'').toLowerCase().includes(v))
+      .map(({b, i}) => `<li><div class="no">${i + 1}</div><div class="bd">
+        <div class="bt">${esc(b.title)}</div>
+        ${b.info ? `<div class="bi">${esc(b.info)}</div>` : ''}
+        <div class="mt">${b.date ? `<span class="badge">${esc(b.date)}</span>` : ''}${b.orig ? `<span class="og">원제 : ${esc(b.orig)}</span>` : ''}</div>
+      </div></li>`).join('') || '<li class="empty">검색 결과가 없어요</li>';
+  };
+  $('#q').oninput = draw; draw();
+  const y = sessionStorage.getItem('jt-y-Books'); if (y) window.scrollTo(0, +y);
 }
 
 function blockHtml(b){
@@ -154,7 +189,8 @@ function blockHtml(b){
     return `<div class="tbl"><table><tr>${h.map(x => `<th>${esc(x)}</th>`).join('')}</tr>${rows.map(r => `<tr>${r.map(x => `<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</table></div>`;
   }
   const x = b.x;
-  if (/^결론\s*:/.test(x)) return `<div class="concl">${esc(x).replace(/\n/g, '<br>')}</div>`;
+  if (/^결론(\s*:|이다\.?(\n|$))/.test(x)) return `<div class="concl">${esc(x).replace(/\n/g, '<br>')}</div>`;
+  if (/^https?:\/\/\S+$/.test(x)) return `<p class="lnk"><a href="${esc(x)}" target="_blank" rel="noopener">${esc(x)}</a></p>`;
   if (/^\d+\.\s*\S/.test(x) && x.length <= 40 && !/[.?!]$/.test(x)) return `<h3>${esc(x)}</h3>`;
   if (/^(\d+\)|[①-⑳]|\(\d+\))\s*\S/.test(x) && x.length <= 40) return `<p class="sub">${esc(x)}</p>`;
   return `<p>${esc(x)}</p>`;
@@ -167,7 +203,7 @@ function article(cat, n){
   // merge consecutive "결론" continuation lines into the conclusion box
   const blocks = []; let inC = false;
   for (const b of it.blocks) {
-    if (b.t === 'p' && /^결론\s*:/.test(b.x)) { blocks.push({t:'p', x:b.x}); inC = true; continue; }
+    if (b.t === 'p' && /^결론(\s*:|이다\.?$)/.test(b.x)) { blocks.push({t:'p', x:b.x}); inC = true; continue; }
     if (inC && b.t === 'p') { blocks[blocks.length - 1].x += '\n' + b.x; continue; }
     inC = false; blocks.push(b);
   }
@@ -175,7 +211,7 @@ function article(cat, n){
   const pv = findNav(-1), nx = findNav(1);
   $('#app').innerHTML = `<div class="art-head"><a class="cat-l" href="#${cat}">${cat} · ${i + 1} / ${c.items.length}</a>
       <h2>${esc(it.title)}</h2>
-      <div class="mt">${fmtDate(it.date)} <span class="badge ${it.np > 1 ? 'long' : ''}">${it.np}장</span></div></div>
+      <div class="mt">${fmtDate(it.date)} <span class="badge">${it.np}장</span></div></div>
     <div class="body">${blocks.map(blockHtml).join('')}</div>
     <div class="nav">${pv >= 0 ? `<a href="#${cat}-${pv + 1}"><small>‹ 이전 글</small><span>${esc(c.items[pv].title)}</span></a>` : ''}
       ${nx >= 0 ? `<a class="nx" href="#${cat}-${nx + 1}"><small>다음 글 ›</small><span>${esc(c.items[nx].title)}</span></a>` : ''}</div>
@@ -194,6 +230,7 @@ function route(){
   const p = parseHash();
   lastList = null;
   if (!p.length) { home(); window.scrollTo(0, 0); }
+  else if (p[0] === 'Books') { books(); lastList = 'Books'; }
   else if (p.length === 1) { list(p[0]); lastList = p[0]; }
   else article(p[0], parseInt(p[1]));
   onScroll();
@@ -205,7 +242,7 @@ function onScroll(){
 }
 addEventListener('scroll', onScroll, {passive:true});
 addEventListener('hashchange', route);
-fetch('data.json').then(r => r.json()).then(d => { DATA = d; route(); })
+fetch('data.json?v=4').then(r => r.json()).then(d => { DATA = d.cats; BOOKS = d.books; route(); })
   .catch(() => { $('#app').innerHTML = '<p class="empty">자료를 불러오지 못했어요. 새로고침해 주세요.</p>'; });
 </script>
 </body>
